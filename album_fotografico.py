@@ -14,9 +14,9 @@ def carica_da_file(file_path):
 
                 campi = line.split(",")#divido nella linea i diversi campi
                 foto = {
-                    "codice": campi[0],
-                    "titolo": campi[1],
-                    "autore": campi[2],
+                    "codice": campi[0].strip(),
+                    "titolo": campi[1].strip(),
+                    "autore": campi[2].strip(),
                     "mese": int(campi[3]),
                     "anno": int(campi[4]),
                 }
@@ -38,8 +38,8 @@ def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
     if mese < 1 or mese > 12:
         return None
 
-    for anno in album:
-        for c in album[anno]:
+    for a in album:
+        for c in album[a]:
             if c["codice"] == codice:
                 return None
 
@@ -70,15 +70,20 @@ def cerca_foto(album, codice):
     for anno in album:
         for c in album[anno]:
             if c["codice"] == codice:
-                return f"{c["codice"]},{c["titolo"]},{c["autore"]},{c["mese"]},{c["anno"]}"
+                return f"{c["codice"]}, {c["titolo"]}, {c["autore"]}, {c["mese"]}, {c["anno"]}"
 
     return None
 
 
-
-def elenco_foto_anno_per_titolo(album, anno):
     """Ordina i titoli delle foto di un dato anno in ordine alfabetico"""
-    # TODO
+def elenco_foto_anno_per_titolo(album, anno):
+    titoli = []
+    if anno not in album:
+        return None
+    for c in album[anno]: # titoli = [c["titolo" for c in album[anno]]
+        titoli.append(c["titolo"])
+
+    return sorted(titoli)
 
 
 def main():
