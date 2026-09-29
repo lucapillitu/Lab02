@@ -1,13 +1,17 @@
+
+"""Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
 def carica_da_file(file_path):
-    """Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
     album = {}#dizionario di dati contenente le informazioni dell'album
     try:
         with open(file_path, "r", encoding="utf-8") as f:
-            f.readline()#passa la prima riga di intitolazione passandola
+            f.readline()#passa la prima riga di intitolazione passandola e segnandola come letta
+
             for line in f:
-                line.strip()#rimumovo parti vuote testuali
+                line = line.strip()#rimumovo parti vuote testuali
+
                 if not line:#in caso di righe vuote le salta
                     continue#paragonabile ad un else
+
                 campi = line.split(",")#divido nella linea i diversi campi
                 foto = {
                     "codice": campi[0],
@@ -17,9 +21,9 @@ def carica_da_file(file_path):
                     "anno": int(campi[4]),
                 }
 
-
                 if int(campi[4]) not in album:
                     album[int(campi[4])] = []
+
                 album[int(campi[4])].append(foto)
     except FileNotFoundError:
         return None
@@ -27,10 +31,39 @@ def carica_da_file(file_path):
     return album
 
 
-
-def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
     """Aggiunge una foto all'album, creando l'anno al volo se non è ancora presente"""
-    # TODO
+def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
+    foto = {}
+    #controlli sulla singola foto
+    if mese < 1 or mese > 12:
+        return None
+
+    for anno in album:
+        for c in album[anno]:
+            if c["codice"] == codice:
+                return None
+
+    #passati i controlli aggiungo la foto e relativi dati
+    try:
+        with open(file_path, "a", encoding="utf-8") as f:
+            if anno not in album:
+                album[anno] = []
+
+            foto = {
+                "codice": codice,
+                "titolo": titolo,
+                "autore": autore,
+                "mese": mese,
+                "anno": anno,
+            }
+            album[anno].append(foto)
+            f.write(f"{codice},{titolo},{autore},{mese},{anno}\n")
+
+    except FileNotFoundError:
+        return None
+
+    return foto
+
 
 
 def cerca_foto(album, codice):
@@ -44,7 +77,7 @@ def elenco_foto_anno_per_titolo(album, anno):
 
 
 def main():
-    album = []
+    album = {}
     file_path = "album_fotografico.csv"
 
     while True:
@@ -56,16 +89,17 @@ def main():
         print("5. Esci")
 
         scelta = input("Scegli un'opzione >> ").strip()
-
+##
         if scelta == "1":
             while True:
                 file_path = input("Inserisci il path del file da caricare: ").strip()
                 album = carica_da_file(file_path)#1
 
                 if album is not None:
-                    print(album)#prova
+                    #print(album)#prova
                     break
 
+##
         elif scelta == "2":
             if not album:
                 print("Prima carica l'album da file.")
@@ -74,19 +108,21 @@ def main():
             codice = input("Codice della foto: ").strip()
             titolo = input("Titolo: ").strip()
             autore = input("Autore: ").strip()
+
             try:
                 mese = int(input("Mese (1-12): ").strip())
                 anno = int(input("Anno: ").strip())
             except ValueError:
                 print("Errore: inserire valori numerici validi per mese e anno.")
                 continue
-
             foto = aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path)#2
+
             if foto:
                 print(f"Foto aggiunta con successo!")
             else:
                 print("Non è stato possibile aggiungere la foto.")
 
+##
         elif scelta == "3":
             if not album:
                 print("L'album è vuoto.")
@@ -99,6 +135,7 @@ def main():
             else:
                 print("Foto non trovata.")
 
+##
         elif scelta == "4":
             if not album:
                 print("L'album è vuoto.")
@@ -117,6 +154,7 @@ def main():
             else:
                 print(f"Nessuna foto trovata per l'anno {anno}.")
 
+##
         elif scelta == "5":
             print("Uscita dal programma.")
             break
