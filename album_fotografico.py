@@ -1,5 +1,5 @@
 
-"""Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
+    """Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
 def carica_da_file(file_path):
     album = {}#dizionario di dati contenente le informazioni dell'album
     try:
@@ -65,10 +65,15 @@ def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
     return foto
 
 
-
-def cerca_foto(album, codice):
     """Cerca una foto nell'album dato il codice"""
-    # TODO
+def cerca_foto(album, codice):
+    for anno in album:
+        for c in album[anno]:
+            if c["codice"] == codice:
+                return f"{c["codice"]},{c["titolo"]},{c["autore"]},{c["mese"]},{c["anno"]}"
+
+    return None
+
 
 
 def elenco_foto_anno_per_titolo(album, anno):
@@ -129,7 +134,7 @@ def main():
                 continue
 
             codice = input("Inserisci il codice della foto da cercare: ").strip()
-            risultato = cerca_foto(album, codice)#3
+            risultato = cerca_foto(album, codice)#3 (risultato deve essere una stringa)
             if risultato:
                 print(f"Foto trovata: {risultato}")
             else:
