@@ -1,18 +1,17 @@
 
-    """Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
+"""Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
 def carica_da_file(file_path):
     album = {}#dizionario di dati contenente le informazioni dell'album
     try:
         with open(file_path, "r", encoding="utf-8") as f:
-            f.readline()#passa la prima riga di intitolazione passandola e segnandola come letta
+            f.readline()
 
             for line in f:
-                line = line.strip()#rimumovo parti vuote testuali
+                line = line.strip()#rimumovo parti testuali vuote
+                if not line:
+                    continue
 
-                if not line:#in caso di righe vuote le salta
-                    continue#paragonabile ad un else
-
-                campi = line.split(",")#divido nella linea i diversi campi
+                campi = line.split(",")#divisione dei campi
                 foto = {
                     "codice": campi[0].strip(),
                     "titolo": campi[1].strip(),
@@ -57,7 +56,7 @@ def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
                 "anno": anno,
             }
             album[anno].append(foto)
-            f.write(f"{codice},{titolo},{autore},{mese},{anno}\n")
+            f.write(f"{codice},{titolo},{autore},{mese},{anno}\n")#aggiungo linea dati al file
 
     except FileNotFoundError:
         return None
@@ -70,7 +69,7 @@ def cerca_foto(album, codice):
     for anno in album:
         for c in album[anno]:
             if c["codice"] == codice:
-                return f"{c["codice"]}, {c["titolo"]}, {c["autore"]}, {c["mese"]}, {c["anno"]}"
+                return f"{c["codice"]}, {c["titolo"]}, {c["autore"]}, {c["mese"]}, {c["anno"]}" #ritorno la stringa da stampare a video
 
     return None
 
@@ -86,6 +85,7 @@ def elenco_foto_anno_per_titolo(album, anno):
     return sorted(titoli)
 
 
+"""MAIN"""
 def main():
     album = {}
     file_path = "album_fotografico.csv"
@@ -108,7 +108,6 @@ def main():
                 if album is not None:
                     #print(album)#prova
                     break
-
 ##
         elif scelta == "2":
             if not album:
@@ -131,7 +130,6 @@ def main():
                 print(f"Foto aggiunta con successo!")
             else:
                 print("Non è stato possibile aggiungere la foto.")
-
 ##
         elif scelta == "3":
             if not album:
@@ -139,12 +137,12 @@ def main():
                 continue
 
             codice = input("Inserisci il codice della foto da cercare: ").strip()
-            risultato = cerca_foto(album, codice)#3 (risultato deve essere una stringa)
+            risultato = cerca_foto(album, codice)#3 (risultato --> deve essere una stringa)
+
             if risultato:
                 print(f"Foto trovata: {risultato}")
             else:
                 print("Foto non trovata.")
-
 ##
         elif scelta == "4":
             if not album:
@@ -156,11 +154,11 @@ def main():
             except ValueError:
                 print("Errore: inserire un valore numerico valido.")
                 continue
-
             titoli = elenco_foto_anno_per_titolo(album, anno)#4
+
             if titoli is not None:
                 print(f'\nFoto del {anno}:')
-                print("\n".join([f"- {titolo}" for titolo in titoli]))#stampa di tutti i titoli
+                print("\n".join([f"- {titolo}" for titolo in titoli]))
             else:
                 print(f"Nessuna foto trovata per l'anno {anno}.")
 
