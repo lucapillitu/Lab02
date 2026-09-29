@@ -68,7 +68,7 @@ def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
 def cerca_foto(album, codice):
     for anno in album:
         for c in album[anno]:
-            if c["codice"] == codice:
+            if c["codice"] == codice.upper():
                 return f"{c["codice"]}, {c["titolo"]}, {c["autore"]}, {c["mese"]}, {c["anno"]}" #ritorno la stringa da stampare a video
 
     return None
@@ -107,6 +107,7 @@ def main():
 
                 if album is not None:
                     #print(album)#prova
+                    print("\nAlbum caricato.")
                     break
 ##
         elif scelta == "2":
@@ -164,7 +165,7 @@ def main():
 
 ##
         elif scelta == "5":
-            print("Uscita dal programma.")
+            print("Uscito dal programma.")
             break
         else:
             print("Opzione non valida. Riprova.")
