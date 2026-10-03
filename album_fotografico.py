@@ -24,7 +24,7 @@ def carica_da_file(file_path):
                     album[int(campi[4])] = []
 
                 album[int(campi[4])].append(foto)
-    except FileNotFoundError:
+    except (FileNotFoundError, IndexError, ValueError):
         return None
 
     return album
